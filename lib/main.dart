@@ -1,10 +1,43 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:uni_links/uni_links.dart' as UniLink;
+import './first_page.dart';
+import './second_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  checkDeepLink();
   runApp(MyApp());
 }
 
+Future checkDeepLink() async {
+  StreamSubscription _sub;
+  try {
+    print("checkDeepLink");
+    await UniLink.getInitialLink();
+    _sub = UniLink.getUriLinksStream().listen((Uri uri) {
+      print('uri: $uri');
+      WidgetsFlutterBinding.ensureInitialized();
+      runApp(MyApp(uri: uri));
+    }, onError: (err) {
+      // Handle exception by warning the user their action did not succeed
+
+      print("onError");
+    });
+  } on PlatformException {
+    print("PlatformException");
+  } on Exception {
+    print('Exception thrown');
+  }
+}
+
 class MyApp extends StatelessWidget {
+  final Uri uri;
+ 
+  MyApp({this.uri});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -26,13 +59,14 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(uri: uri, title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title, this.uri}) : super(key: key);
+  final Uri uri;
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -65,6 +99,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_){
+      // take action according to data uri
+      if (widget.uri != null) {
+        List<String> splitted = widget.uri.toString().split('/');
+        if (splitted[splitted.length - 1] == 'page1')
+          Navigator.push(context, MaterialPageRoute(builder: (context) => FirstPage(widget.uri)));
+        if (splitted[splitted.length - 1] == 'page2')
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SecondPage(widget.uri)));
+      }
+    });
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
