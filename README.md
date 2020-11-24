@@ -3,7 +3,12 @@
 Example of flutter app utilizing universal/app link for android and ios application
 
 ## Table of content
-...
+
+- [In this demo](#in-this-demo)
+- [Android](#android)
+- [IOS](#ios)
+- [Managing route in app](#managing-route-in-app)
+- [Reference](#reference)
 
 Universal link (universal link for ios, app link for android) is technique that mobile platforms: android and ios use to open the application via a link. The link consists of scheme and host part; if the scheme part is http or https the link will be called universal/app link, otherwise, it will be called deep link. The difference between deep link and universal/app link are that the application website has to be verified by config files placed on the web and that the flow will not be interupted by app confirmation popup.
 
