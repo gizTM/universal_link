@@ -111,6 +111,16 @@ The link https://new-flutter-universal-link.herokuapp.com/page2 will trigger the
 
 In addition to opening app from link, the universal link can also be used to manage in app route for page rendering. This can be done by detecting the uri used to open the app when the link is tapped.
 
+add dependency in `pubspec.yaml`
+
+```
+dependencies:
+  ..
+  uni_links: 0.2.0
+```
+
+add logic in `lib/main.dart`
+
 ```
 import 'dart:async';
 import 'package:flutter/material.dart';
